@@ -1,10 +1,9 @@
 package main
 
 import (
+	"exercise-2-handler/urlshort"
 	"fmt"
 	"net/http"
-
-	"github.com/gophercises/urlshort"
 )
 
 func main() {
