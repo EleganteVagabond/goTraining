@@ -1,0 +1,10 @@
+[
+    {
+        "path": "/urlshortjson",
+        "url": "https://www.sohamkamani.com/blog/2017/10/18/parsing-json-in-golang/"
+    },
+    {
+        "path": "/urlshortjson-final",
+        "url": "https://stackoverflow.com/questions/7782411/is-there-a-foreach-loop-in-go"
+    }
+]
