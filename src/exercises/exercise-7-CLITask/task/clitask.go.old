@@ -1,0 +1,71 @@
+package clitask
+
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
+
+var cmds = []string{"add", "do", "list"}
+
+type Command struct {
+	cmdstr  string
+	usage   string
+	purpose string
+	Runner  func(args []string) error
+}
+
+var ADD = Command{
+	"add",
+	"add [task name]",
+	"adds a task to your TODO list",
+	func(args []string) error {
+		if len(args) == 0 {
+			return errors.New("add command requires task name")
+		}
+		taskname := strings.Join(args, " ")
+		fmt.Println("taskname is", taskname)
+		return nil
+	},
+}
+var LIST = Command{
+	"list",
+	"list",
+	"lists the tasks on your TODO list",
+	func(args []string) error {
+		if len(args) > 0 {
+			return errors.New("list command should be run without any args")
+		}
+		return nil
+	},
+}
+
+var DO = Command{
+	"do",
+	"do [task number]",
+	"marks the task [task name] as done on your TODO list",
+	func(args []string) error {
+		if len(args) == 0 {
+			return errors.New("do command requires task number from list command")
+		}
+		return nil
+	},
+}
+
+func (cmd *Command) PrintHelp() {
+	fmt.Println(cmd.purpose)
+	fmt.Println(cmd.usage)
+}
+
+var Commands = []Command{ADD, LIST, DO}
+
+func GetCommand(cmd string) *Command {
+	var ret *Command
+	for ix, val := range Commands {
+		if val.cmdstr == cmd {
+			ret = &Commands[ix]
+			break
+		}
+	}
+	return ret
+}
