@@ -1,0 +1,31 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
+.glide/
+
+# all of the extra packages we have downloaded but don't want in git
+**/tmp/*
+*/cloud.google.com/*
+*/github.com/*
+*/go.opencensus.io/*
+*/golang.org/*
+*/google.goland.org/*
+*/gopkg.in/*
+*/yaml/*
+*/pkg/*
+*/.vscode/*
+*/bin/*
+
+# image files
+*.png
+*.svg
