@@ -20,4 +20,8 @@ Modules include:
 
 (8) a phone number normalizer that takes in various phone numbers (ostensibly from signups at a conference) and normalizes them using regular expressions
 
+(9) a clone of HackerNews that used concurrency to pull stories in parallel instead of serially (while maintaining the original order)
+
+(10) an tool that produces simple svg images including bar graphs and crazy looking fractals 
+
 Really enjoyed what I learned and took me back to my C++/Java days in college. Many thanks to Jon for the course!
