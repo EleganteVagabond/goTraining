@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -192,6 +193,151 @@ func Test_morganAndString(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := morganAndString(tt.args.a, tt.args.b); got != tt.want {
 				t.Errorf("morganAndString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func makeint32Arr(arr []int) []int32 {
+	ret := make([]int32, len(arr))
+	for ix, v := range arr {
+		ret[ix] = int32(v)
+	}
+	return ret
+}
+
+func Test_maxSubarray(t *testing.T) {
+	type args struct {
+		arr []int32
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int32
+	}{
+		{name: "1",
+			args: args{makeint32Arr([]int{1, 2, 3, 4})},
+			want: []int32{int32(10), int32(10)},
+		},
+		{name: "2",
+			args: args{makeint32Arr([]int{2, -1, 2, 3, 4, -5})},
+			want: []int32{int32(10), int32(11)},
+		},
+		{name: "3",
+			args: args{makeint32Arr([]int{-2, -3, -1, -4, -6})},
+			want: []int32{int32(-1), int32(-1)},
+		},
+		{name: "0",
+			args: args{makeint32Arr([]int{0, 0, 0, 0})},
+			want: []int32{int32(0), int32(0)},
+		},
+		{name: "4",
+			args: args{makeint32Arr([]int{2, -1, 2, -1, 3, 4, -5})},
+			want: []int32{int32(9), int32(11)},
+		},
+		{name: "5",
+			args: args{makeint32Arr([]int{-3, 2, -1, 2, -1, 3, 4, -5})},
+			want: []int32{int32(9), int32(11)},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := maxSubarray(tt.args.arr); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("maxSubarray() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func makeint64Arr(arr []int) []int64 {
+	ret := make([]int64, len(arr))
+	for ix, v := range arr {
+		ret[ix] = int64(v)
+	}
+	return ret
+}
+
+func Test_getWays(t *testing.T) {
+	type args struct {
+		n int32
+		c []int64
+	}
+	tests := []struct {
+		name string
+		args args
+		want int64
+	}{
+		{
+			name: "0",
+			args: args{0, []int64{int64(1)}},
+			want: 1,
+		},
+		{
+			name: "1",
+			args: args{3, makeint64Arr([]int{8, 3, 1, 2})},
+			want: 3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getWays(tt.args.n, tt.args.c); got != tt.want {
+				t.Errorf("getWays() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_bigSorting(t *testing.T) {
+	type args struct {
+		unsorted []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "1",
+			args: args{[]string{"1"}},
+			want: []string{"1"},
+		},
+		{
+			name: "long",
+			args: args{[]string{"31415926535897932384626433832795"}},
+			want: []string{"31415926535897932384626433832795"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := bigSorting(tt.args.unsorted); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("bigSorting() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_minimumPasses(t *testing.T) {
+	type args struct {
+		m int64
+		w int64
+		p int64
+		n int64
+	}
+	tests := []struct {
+		name string
+		args args
+		want int64
+	}{
+		{
+			name: "fail",
+			args: args{1, 100, 10000000000, 1000000000000},
+			want: 617737754,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := minimumPasses(tt.args.m, tt.args.w, tt.args.p, tt.args.n); got != tt.want {
+				t.Errorf("minimumPasses() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -1,0 +1,176 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+
+func ShortestMerge(A []int) int {
+	if len(A) < 3 {
+		return 0
+	}
+	sort.IntSlice.Sort(A)
+	tot_cost := A[0]+A[1]
+	prev_sum := tot_cost
+	for ix:=2; ix<len(A); ix++ {		
+		tot_cost = tot_cost + prev_sum+A[ix]
+		prev_sum = prev_sum+A[ix]
+	}
+	return tot_cost
+}
+
+type CoordLabel struct {
+	label rune
+	rad int
+	next *CoordLabel
+}
+
+func abs(v int) int {
+	if v < 0 {
+		return v * -1
+	}
+	return v
+}
+
+func max(a int, b int) int {
+	if a < b {
+		return b
+	}
+	return a
+}
+
+func HitPoints(S string, X []int, Y []int) int {
+	maxRad := 0
+	lUsed := make(map[rune]bool,26)
+	// linked list of coordinates based on the min radius (eg x=1,y=2 then min rad=2 to hit this point)
+	labels := make(map[int]*CoordLabel,len(S))
+	// build our list datastruct
+	for ix,c := range S {
+		// all we care about is the radius
+		mx := max(abs(X[ix]),abs(Y[ix]))
+		if mx > maxRad {
+			maxRad = mx
+		}
+		cl := CoordLabel{c,mx, nil}
+		if labels[mx] == nil {
+			labels[mx] = &cl
+		}else {
+			l := labels[mx]
+			for (l.next != nil) {
+				l = l.next
+			}
+			l.next = &cl
+		}
+	}
+	// now loop through until we find a duplicate label
+	count := 0
+	for rad := 0; rad <= maxRad; rad++ {
+		newCnt :=0
+		dupe := false
+		ll := labels[rad]
+		for ll != nil {
+			if !lUsed[ll.label] {
+				lUsed[ll.label] = true
+				newCnt++
+				ll = ll.next
+			}else {
+				dupe = true
+				break
+			}
+		}
+		if !dupe {
+			count += newCnt
+		}else {
+			break
+		}
+	}
+	return count
+}
+
+// TODO optimize with 2 pointers to find sections that can be removed to create continuity
+// eg a[i] == a[i+k]
+func minCompress(S string, K int) int {
+	const MIN = 2
+	if strings.Repeat(S[0:1],len(S)) == S {
+		return len(strconv.Itoa(len(S)))+1
+	}
+	minval := len(S)
+	minstr := ""
+	// just brute force through all options
+	for ix := K; ix < len(S); ix++ {
+		compressed,fail := compress(S[0:(ix-K)]+S[ix:],minval)
+		if fail {
+			continue
+		}
+		// fmt.Println(ix,"cprd",compressed)
+		if(len(compressed) < minval) {
+			minval = len(compressed)
+			minstr = compressed
+		}
+		// just bail if we got the best
+		if minval == MIN {
+			break
+		}
+	}
+	fmt.Println("minstr->",minstr)
+	return minval
+}
+
+func compress(S string,maxL int) (string,bool) {
+	pc := S[0]
+	cnt := 1
+	ret := ""
+	for ix := 1; ix < len(S); ix++ {
+		if pc != S[ix] {			
+			if cnt > 1 {
+				ret = ret + strconv.Itoa(cnt)
+			}
+			ret = ret + string(pc)
+			// just bail
+			if len(ret) >= maxL {
+				return "", true
+			}
+			pc=S[ix]
+			cnt = 1
+		}else {
+			cnt++
+		}
+		
+	}
+	// handle the last character if repeated
+	if cnt > 1 {
+		ret = ret + strconv.Itoa(cnt)+string(pc)
+	}
+	return ret, false
+}
+
+func main () {
+	/* --merge tests-- 10 mins*/
+	// fmt.Println(ShortestMerge([]int {100,250,1000}))
+	// fmt.Println(ShortestMerge([]int {1000,250,100,500}))
+	// fmt.Println((100+250)+(100+250+500)+(100+250+500+1000))
+	// fmt.Println(ShortestMerge([]int {100,100,100,100,100}))
+	// fmt.Println((100+100) + (100+100+100) + (100+100+100+100)+(100+100+100+100+100))
+
+	// A1[1,0],A2[3,-3],B[0,0],C[2,2],D[-1,2],E[-3,-3]
+	// A1,B,C,D (not A2, E)
+
+	/** --hit point tests-- 30 mins*/
+	// fmt.Println("HP1 (4)",HitPoints("AABCDE",[]int{1,3,0,2,-1,-3},[]int{0,-3,0,2,2,-3}))
+	// fmt.Println("HP2 (5)",HitPoints("ABCDE",[]int{1,3,0,2,-1,-3},[]int{0,-3,0,2,2,-3}))
+	// fmt.Println("HP3 (1)",HitPoints("A",[]int{100000},[]int{100000}))
+	// fmt.Println("HP4 (0)",HitPoints("AAA",[]int{0,0,0},[]int{0,0,0}))
+
+	/** --compression tests-- brute force 25 minutes*/
+	fmt.Println(compress("AAABXXAAA",13))
+	fmt.Println("CT1 (2)",minCompress("AAABXXAAA",3))
+	fmt.Println("CT2 (2)",minCompress("BXXAAAAAA",3))
+	fmt.Println("CT3 (5)",minCompress("AABCCDDDCCC",3))
+	fmt.Println("CT4 (3)",minCompress("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",3))
+	fmt.Println("CT5 (2)",minCompress("AAAAAABXX",3))
+	fmt.Println("CT6 (6)",minCompress(strings.Repeat("A",10)+"XXX"+strings.Repeat("B",10),3))
+	fmt.Println("CT7 (12)",minCompress(strings.Repeat("A",50000)+"XXX"+strings.Repeat("B",50000),3))
+}
